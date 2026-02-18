@@ -22,10 +22,13 @@
   </div>
   <script type="module" src="/src/main.jsx"></script>
   <script>
-    // Service Worker Registration
+    // EMERGENCY FIX: Unregister all service workers to clear stale cache
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (let registration of registrations) {
+          registration.unregister();
+          console.log('Service Worker Unregistered');
+        }
       });
     }
   </script>
