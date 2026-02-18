@@ -9,7 +9,7 @@ export default function Fab({ onClick, className }) {
             whileTap={{ scale: 0.9 }}
             onClick={onClick}
             className={cn(
-                "bg-gradient-to-tr from-deep-violet-600 to-electric-blue-500 text-white p-4 rounded-full shadow-lg shadow-deep-violet-500/40 fixed bottom-24 right-6 z-50 md:right-10 flex items-center justify-center backdrop-blur-sm border-2 border-white/20",
+                "bg-gradient-to-tr from-deep-violet-600 to-electric-blue-500 text-white p-4 rounded-full shadow-lg shadow-deep-violet-500/40 fixed bottom-8 right-8 z-50 items-center justify-center backdrop-blur-sm border-2 border-white/20 hidden md:flex",
                 className
             )}
         >

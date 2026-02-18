@@ -13,7 +13,7 @@ export default function BottomNav({ onOpenAdd }) {
     ];
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/80 backdrop-blur-xl border-t border-white/10 pb-[env(safe-area-inset-bottom)] pt-2 px-6 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
+        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/80 backdrop-blur-xl border-t border-white/10 pb-[env(safe-area-inset-bottom)] pt-2 px-6 shadow-[0_-4px_20px_rgba(0,0,0,0.3)] md:hidden">
             <div className="flex justify-between items-center max-w-md mx-auto h-16">
                 {navItems.map((item) => {
                     const Icon = item.icon;
