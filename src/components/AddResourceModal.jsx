@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Image as ImageIcon, Link2, StickyNote, ArrowLeft, Loader2, UploadCloud, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
@@ -10,6 +10,8 @@ export default function AddResourceModal({ isOpen, onClose }) {
     const [step, setStep] = useState('select'); // 'select' | 'form'
     const [type, setType] = useState(null);
     const [formData, setFormData] = useState({ title: '', content: '', category: 'Jobs' });
+    const [file, setFile] = useState(null);
+    const fileInputRef = useRef(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
 
@@ -20,6 +22,7 @@ export default function AddResourceModal({ isOpen, onClose }) {
                 setStep('select');
                 setType(null);
                 setFormData({ title: '', content: '', category: 'Jobs' });
+                setFile(null);
                 setError(null);
             }, 300);
         }
@@ -32,6 +35,12 @@ export default function AddResourceModal({ isOpen, onClose }) {
         return () => window.removeEventListener('keydown', handleEscape);
     }, [onClose]);
 
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!supabase) {
@@ -43,12 +52,33 @@ export default function AddResourceModal({ isOpen, onClose }) {
         setError(null);
 
         try {
+            let contentToSave = formData.content;
+
+            // Handle Image Upload
+            if (type === 'image' && file) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('images')
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data } = supabase.storage
+                    .from('images')
+                    .getPublicUrl(filePath);
+
+                contentToSave = data.publicUrl;
+            }
+
             const { error: insertError } = await supabase
                 .from('resources')
                 .insert([
                     {
                         title: formData.title,
-                        content: formData.content,
+                        content: contentToSave,
                         category: formData.category,
                         type: type,
                         last_apply_date: formData.last_apply_date // Include this field (make sure to run SQL migration!)
@@ -194,7 +224,7 @@ export default function AddResourceModal({ isOpen, onClose }) {
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">Content</label>
                                         <textarea
-                                            required={formData.category !== 'Jobs'} // Content optional for Jobs if just tracking application
+                                            required={formData.category !== 'Jobs'}
                                             rows={4}
                                             placeholder="Type your note here..."
                                             value={formData.content}
@@ -219,18 +249,35 @@ export default function AddResourceModal({ isOpen, onClose }) {
                                 )}
 
                                 {type === 'image' && (
-                                    <div className="border-2 border-dashed border-slate-700 hover:border-slate-500 rounded-xl p-8 flex flex-col items-center justify-center text-center transition-colors cursor-pointer bg-slate-800/20">
-                                        <UploadCloud className="text-slate-500 mb-2" size={32} />
-                                        <p className="text-sm text-slate-400 font-medium">Click to upload image</p>
-                                        <p className="text-xs text-slate-600 mt-1">(Image upload not fully implemented without Storage bucket)</p>
-                                        {/* Hidden file input would go here */}
-                                    </div>
+                                    <>
+                                        <div
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className="border-2 border-dashed border-slate-700 hover:border-electric-blue-500/50 hover:bg-slate-800/50 rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all cursor-pointer group"
+                                        >
+                                            <UploadCloud className="text-slate-500 group-hover:text-electric-blue-400 mb-2 transition-colors" size={32} />
+                                            {file ? (
+                                                <p className="text-sm text-electric-blue-400 font-medium break-all">{file.name}</p>
+                                            ) : (
+                                                <>
+                                                    <p className="text-sm text-slate-400 font-medium group-hover:text-slate-300">Click to upload image</p>
+                                                    <p className="text-xs text-slate-600 mt-1">Supports JPG, PNG, GIF</p>
+                                                </>
+                                            )}
+                                        </div>
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                            accept="image/*"
+                                        />
+                                    </>
                                 )}
 
                                 <button
                                     type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full bg-gradient-to-r from-deep-violet-600 to-electric-blue-600 hover:from-deep-violet-500 hover:to-electric-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-electric-blue-500/20 transition-all flex items-center justify-center gap-2 mt-4"
+                                    disabled={isSubmitting || (type === 'image' && !file)}
+                                    className="w-full bg-gradient-to-r from-deep-violet-600 to-electric-blue-600 hover:from-deep-violet-500 hover:to-electric-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-electric-blue-500/20 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isSubmitting ? <Loader2 className="animate-spin" /> : 'Save Resource'}
                                 </button>
