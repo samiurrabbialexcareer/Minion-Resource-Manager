@@ -7,12 +7,16 @@ import './index.css'
 
 const queryClient = new QueryClient()
 
+import ErrorBoundary from './components/ErrorBoundary';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ErrorBoundary>
     </QueryClientProvider>
   </React.StrictMode>,
 )
