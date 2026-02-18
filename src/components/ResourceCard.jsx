@@ -52,7 +52,7 @@ export default function ResourceCard({ resource, index }) {
                     {/* Category & Type Icon */}
                     <div className="flex items-center gap-2">
                         <span className={cn(
-                            "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full",
+                            "text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full",
                             isNote ? "bg-white/20 text-white" :
                                 category === 'Jobs' ? "bg-blue-500/20 text-electric-blue-300" :
                                     "bg-purple-500/20 text-purple-300"
@@ -98,7 +98,7 @@ export default function ResourceCard({ resource, index }) {
                 {/* Job Apply Date */}
                 {category === 'Jobs' && applyDate && (
                     <div className="mt-2 flex items-center gap-2 text-xs">
-                        <span className="text-white/50 uppercase font-bold tracking-wider">Applied:</span>
+                        <span className="text-xs uppercase font-bold text-white/70">Last Applied:</span>
                         <span className={cn("font-mono", isNote ? "text-white/90" : "text-electric-blue-400")}>{applyDate}</span>
                     </div>
                 )}
@@ -138,7 +138,7 @@ export default function ResourceCard({ resource, index }) {
                             href={content}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-xs text-electric-blue-400 hover:text-electric-blue-300 hover:underline truncate"
+                            className="flex items-center gap-2 text-sm text-electric-blue-400 hover:text-electric-blue-300 hover:underline truncate"
                         >
                             <span className="truncate opacity-80">{content?.replace(/^https?:\/\//, '')}</span>
                             <ExternalLink size={10} strokeWidth={3} />
@@ -147,9 +147,9 @@ export default function ResourceCard({ resource, index }) {
 
                     {/* IMAGE Content (Just a label for now since we don't have previews really) */}
                     {type === 'image' && (
-                        <div className="text-xs text-slate-500 italic flex items-center gap-1">
+                        <a href={content} target="_blank" rel="noopener noreferrer" className="text-sm text-electric-blue-400 hover:underline flex items-center gap-1 mt-2 font-medium">
                             <ImageIcon size={12} /> Image resource
-                        </div>
+                        </a>
                     )}
                 </div>
             </div>

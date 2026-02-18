@@ -145,7 +145,7 @@ export default function AddResourceModal({ isOpen, onClose }) {
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                                    <label className="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">
                                         {formData.category === 'Jobs' ? 'Heading / Role' : 'Title'}
                                     </label>
                                     <input
@@ -159,7 +159,7 @@ export default function AddResourceModal({ isOpen, onClose }) {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Category</label>
+                                    <label className="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">Category</label>
                                     <div className="relative">
                                         <select
                                             value={formData.category}
@@ -180,7 +180,7 @@ export default function AddResourceModal({ isOpen, onClose }) {
 
                                 {formData.category === 'Jobs' && (
                                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
-                                        <label className="block text-xs font-semibold text-electric-blue-400 uppercase tracking-wider mb-1">Last Apply Date</label>
+                                        <label className="block text-sm font-semibold text-electric-blue-400 uppercase tracking-wider mb-1">Last Apply Date</label>
                                         <input
                                             type="date"
                                             value={formData.last_apply_date || ''}
@@ -192,7 +192,7 @@ export default function AddResourceModal({ isOpen, onClose }) {
 
                                 {type === 'note' && (
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Content</label>
+                                        <label className="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">Content</label>
                                         <textarea
                                             required={formData.category !== 'Jobs'} // Content optional for Jobs if just tracking application
                                             rows={4}
@@ -206,7 +206,7 @@ export default function AddResourceModal({ isOpen, onClose }) {
 
                                 {type === 'link' && (
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">URL</label>
+                                        <label className="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">URL</label>
                                         <input
                                             type="url"
                                             required
